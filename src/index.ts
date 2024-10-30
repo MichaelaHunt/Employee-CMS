@@ -42,20 +42,35 @@ async function performActions(response: any) {
             //do an inquirer to get the info you need
             let name = await handleDepartmentAddition();
             //then do an add
-            await dbService.AddDepartment(name);
+            try {
+                await dbService.AddDepartment(name);
+            } catch (err) {
+                console.log("ERROR: " + err);
+            }
             break;
         case "Add a role":
             let { title, salary, departmentId } = await handleRoleAddition();
-            await dbService.AddRole(title, salary, departmentId);
-
+            try {
+                await dbService.AddRole(title, salary, departmentId);
+            } catch (err) {
+                console.log("ERROR: " + err);
+            }
             break;
         case "Add an employee":
             let { firstName, lastName, roleId, managerId } = await handleEmployeeAddition();
-            await dbService.AddEmployee(firstName, lastName, roleId, managerId);
+            try {
+                await dbService.AddEmployee(firstName, lastName, roleId, managerId);
+            } catch (err) {
+                console.log("ERROR: " + err);
+            }
             break;
         case "Update an employee's role":
             let { role_Id, employeeId } = await handleEmployeeRoleChange();
-            await dbService.UpdateEmployee(role_Id, employeeId);
+            try {
+                await dbService.UpdateEmployee(role_Id, employeeId);
+            } catch (err) {
+                console.log("ERROR: " + err);
+            }
             break;
     }
     if (response.action != "Exit") {
@@ -104,7 +119,7 @@ async function handleRoleAddition() {//need title, salary, and department_id
         }
     ]).then((response) => {
         console.log("Entered the then clause");
-        for (let item of rows!) {
+        for (let item of rows!) {//so these loops are to grab the id from the list names
             if (response.department === item.name) {
                 console.log("Response.department is: " + response.department);
                 departmentId = item.id;
