@@ -77,8 +77,6 @@ class dbServices {
 
     async AddEmployee(firstName: string, lastName: string, roleId: number, managerId: number) {
         const params = [firstName, lastName, roleId, managerId];
-
-        console.log(`first name: ${firstName}, last name: ${lastName}, roleId: ${roleId}, managerId: ${managerId}`);
         try {
             await pool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', params, (err, _result) => {
                 if (err) {
@@ -91,8 +89,18 @@ class dbServices {
         }
     }
 
-    async UpdateEmployee() {
-
+    async UpdateEmployee(roleId: number, employeeId: number) {
+        const params = [roleId, employeeId];
+        try {
+            await pool.query('UPDATE employee SET role_id = $1 WHERE id = $2', params, (err, _result) => {
+                if (err) {
+                    console.log(err);
+                } 
+            });
+        } catch (err) {
+            console.log(err);
+            // throw err;
+        }
     }
 }
 

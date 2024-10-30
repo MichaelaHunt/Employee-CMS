@@ -45,17 +45,17 @@ async function performActions(response: any) {
             await dbService.AddDepartment(name);
             break;
         case "Add a role":
-            let {title, salary, departmentId } = await handleRoleAddition();
+            let { title, salary, departmentId } = await handleRoleAddition();
             await dbService.AddRole(title, salary, departmentId);
 
             break;
         case "Add an employee":
-            let {firstName, lastName, roleId, managerId } = await handleEmployeeAddition();
+            let { firstName, lastName, roleId, managerId } = await handleEmployeeAddition();
             await dbService.AddEmployee(firstName, lastName, roleId, managerId);
             break;
         case "Update an employee's role":
-
-
+            let { role_Id, employeeId } = await handleEmployeeRoleChange();
+            await dbService.UpdateEmployee(role_Id, employeeId);
             break;
     }
     if (response.action != "Exit") {
@@ -109,12 +109,12 @@ async function handleRoleAddition() {//need title, salary, and department_id
                 console.log("Response.department is: " + response.department);
                 departmentId = item.id;
             }
-        } 
+        }
         title = response.title;
         salary = response.salary;
     });
 
-    return {title, salary, departmentId };
+    return { title, salary, departmentId };
 }
 
 async function handleEmployeeAddition() {//need first name, last name, role_id, and manager_id.
@@ -122,7 +122,7 @@ async function handleEmployeeAddition() {//need first name, last name, role_id, 
     let managerRows = await dbService.GetEmployeeTable();
     //format them into an array of just the names
     let roles = roleRows!.map((item) => item.title);
-    let managers = managerRows!.map((item) => `${item.first_name} ${item.last_name}`);//undefined undefined, apparently. TODO:
+    let managers = managerRows!.map((item) => `${item.first_name} ${item.last_name}`);
 
     let firstName = '';
     let lastName = '';
@@ -156,16 +156,52 @@ async function handleEmployeeAddition() {//need first name, last name, role_id, 
             if (response.role === item.title) {
                 roleId = item.id;
             }
-        } 
+        }
         for (let item of managerRows!) {
             if (response.manager === `${item.first_name} ${item.last_name}`) {
                 managerId = item.id;
             }
-        } 
+        }
         firstName = response.firstName;
         lastName = response.lastName;
     });
     return { firstName, lastName, roleId, managerId };
+}
+
+async function handleEmployeeRoleChange() {
+    let roleRows = await dbService.GetRoleTable();
+    let employeeRows = await dbService.GetEmployeeTable();
+    let employeeId = 0;
+    let role_Id = 0;
+    //get the titles only
+    let roles = roleRows!.map((item) => item.title);
+    let employees = employeeRows!.map((item) => `${item.first_name} ${item.last_name}`);
+    await inquirer.prompt([
+        {
+            type: 'list',
+            message: "Whose role are you updating?",
+            name: 'employee',
+            choices: employees
+        },
+        {
+            type: 'list',
+            message: "What is their new role?",
+            name: 'role',
+            choices: roles
+        }
+    ]).then((response) => {
+        for (let item of roleRows!) {
+            if (response.role === item.title) {
+                role_Id = item.id;
+            }
+        }
+        for (let item of employeeRows!) {
+            if (response.employee === `${item.first_name} ${item.last_name}`) {
+                employeeId = item.id;
+            }
+        }
+    });
+    return { role_Id, employeeId };
 }
 
 init();
