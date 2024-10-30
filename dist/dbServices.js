@@ -1,26 +1,13 @@
 import { pool, connectToDb } from './connection.js';
 await connectToDb();
 class dbServices {
-    // GetDepartmentTable() {
-    //     let rows: any;
-    //     pool.query('SELECT * FROM department', (err: Error, result: QueryResult) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else if (result) {
-    //             rows = result.rows;
-    //         }
-    //     });
-    //     console.log(rows);
-    //     return rows;
-    // }
     async GetDepartmentTable() {
         try {
             const result = await pool.query('SELECT * FROM department');
             return result.rows;
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
     async GetRoleTable() {
@@ -29,8 +16,7 @@ class dbServices {
             return result.rows;
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
     async GetEmployeeTable() {
@@ -39,8 +25,7 @@ class dbServices {
             return result.rows;
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
     async AddDepartment(name) {
@@ -53,8 +38,7 @@ class dbServices {
             });
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
     async AddRole(title, salary, department_id) {
@@ -67,8 +51,7 @@ class dbServices {
             });
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
     async AddEmployee(firstName, lastName, roleId, managerId) {
@@ -81,8 +64,7 @@ class dbServices {
             });
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
     async UpdateEmployee(roleId, employeeId) {
@@ -95,8 +77,7 @@ class dbServices {
             });
         }
         catch (err) {
-            console.log(err);
-            // throw err;
+            throw err;
         }
     }
 }

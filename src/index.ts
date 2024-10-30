@@ -118,10 +118,8 @@ async function handleRoleAddition() {//need title, salary, and department_id
             choices: list
         }
     ]).then((response) => {
-        console.log("Entered the then clause");
         for (let item of rows!) {//so these loops are to grab the id from the list names
             if (response.department === item.name) {
-                console.log("Response.department is: " + response.department);
                 departmentId = item.id;
             }
         }
